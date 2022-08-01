@@ -1,8 +1,14 @@
 ---
 permalink: /about/
 title: "About"
+author_profile: true
 ---
 
-Tempor velit sint sunt ipsum tempor enim ad qui ullamco. Est dolore anim ad velit duis dolore minim sunt aliquip amet commodo labore. Ut eu pariatur aute ea aute excepteur laborum. Esse ea esse excepteur minim mollit qui cillum excepteur ex dolore magna. Labore deserunt fugiat incididunt incididunt sint ea. Consequat dolore aute laboris quis proident quis non et est consectetur ex eiusmod sit culpa.
+Hi there! I'm an Astrophysics PhD Student under the supervision of <a href="https://www.mso.anu.edu.au/~chfeder/" style="color:#F5D3B8;"> A/Prof Christoph Federrath </a> and <a href="https://www.mso.anu.edu.au/~krumholz/" style="color:#F5D3B8;"> Prof. Mark Krumholz </a> at the Research School of Astronomy and Astrophysics at the Mount Stromlo Observatory, Australian National University (ANU), Canberra.
 
-Cupidatat ea do et in excepteur in. Ad nostrud ut est esse eu duis ea sunt eiusmod. Aliquip tempor veniam sint elit fugiat. Velit incididunt laboris amet incididunt labore dolore irure velit excepteur commodo deserunt laborum. Consectetur eu fugiat veniam veniam Lorem labore magna eiusmod. Ea occaecat reprehenderit pariatur consectetur minim labore ut aliquip.
+My research focuses on studying the dynamics of the environment in which stars form also known as the Interstellar Medium (or ISM). I study how stars form from this interstellar environment, and how the radiation of newly-formed stars can in turn alter this environment, effectively resulting in a coupled complex system to study. This is studied using a combination of simple theoretical models and complex numerical simulations run on powerful supercomputers.
+
+To know more about my research please head to the [Research][1] tab or take a look at my [Resume][2].
+
+[1]: /posts/
+[2]: /assets/docs/Resume.pdf
