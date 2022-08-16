@@ -1,10 +1,15 @@
 main:
-  - title: "About Me"
-    url: /about/
+  - title: "Home"
+    url: /
   - title: "Research"
     url: /posts/
-  - title: "Codes/Resources"
-    url: /categories/
+  - title: "CV/Publications"
+    url: /pubs/
   - title: "Movies"
-    url: /tags/
+    url: /movies/
+  - title: "Codes/Resources"
+    url: /codes/
+  - title: "Life Outside Science"
+    url: /life/
+
   

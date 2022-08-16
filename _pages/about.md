@@ -1,6 +1,6 @@
 ---
 permalink: /about/
-title: "About"
+title: "Shyam Menon"
 author_profile: true
 ---
 

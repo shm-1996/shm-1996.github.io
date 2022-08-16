@@ -16,21 +16,17 @@
 title: Shyam Menon
 email: shyam.menon@anu.edu.au
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
-twitter_username: username
+  Professional website of Shyam H Menon, a PhD student of Astrophysics at the Australian National University
+twitter_username: shyam_astro
 github_username: shm-1996
-minimal_mistakes_skin: neon
-search: true
+minimal_mistakes_skin: mint
+search: false
 
 # Build settings
 markdown: kramdown
 remote_theme: mmistakes/minimal-mistakes
 # Outputting
 permalink: /:categories/:title/
-paginate: 1 # amount of posts to show
-paginate_path: /page:num/
 timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 include:
@@ -56,6 +52,7 @@ plugins:
   - jekyll-feed
   - jemoji
   - jekyll-include-cache
+  - jekyll-pdf-embed
 
 author:
   name   : "Shyam Menon"
@@ -64,9 +61,9 @@ author:
   location : Canberra, Australia
   email : shyam.menon@anu.edu.au
   links:
-    - label: "Website"
-      icon: "fas fa-fw fa-link"
-      url: "https://"
+    - label: "Orcid"
+      icon: "fab fa-fw fa-orcid"
+      url: "https://orcid.org/0000-0001-5944-291X"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/shm-1996"
@@ -74,14 +71,18 @@ author:
       icon: "fab fa-fw fa-twitter-square"
       url: "https://twitter.com/"
 
+
 footer:
-  links:
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://github.com/"
+  # links:
+  #   - label: "Twitter"
+  #     icon: "fab fa-fw fa-twitter-square"
+  #     url: "https://twitter.com/"
+  #   - label: "GitHub"
+  #     icon: "fab fa-fw fa-github"
+  #     url: "https://github.com/"
+
+sass:
+    sass_dir: _sass
 
 defaults:
   # _posts
