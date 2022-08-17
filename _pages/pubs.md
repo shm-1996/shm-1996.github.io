@@ -6,6 +6,12 @@ classes: wide
 ---
 
 <h3><u>
+	CV/Resume
+</u> </h3>
+
+You can find my CV [**here**](/assets/docs/Resume.pdf).
+
+<h3><u>
 	Publications
 </u> </h3>
 
@@ -38,9 +44,4 @@ An up-to-date list of my publications can be found on my <a href="https://adsabs
 Sharda, P.; **Menon, S.H.** ; Federrath, C.; Krumholz, M.R.; Beattie, J.R; Jameson, K.E.; Tokuda, K.; Burkhart, B.; Crocker, R.M; Law, C.J.; Seta, A.; Gaetz, T.J.; Pingel, N.M.; Seitenzahl, I.R.; Sano, H.; Fukui, Y. (2022; MNRAS, 509, 2180)
 
 
-
-<h3><u>
-	CV/Resume
-</u> </h3>
-
-{% pdf "/assets/docs/Resume.pdf" %}
+<!-- {% pdf "/assets/docs/Resume.pdf" %} -->
