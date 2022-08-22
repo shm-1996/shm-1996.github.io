@@ -15,6 +15,6 @@ VETTAM is unique as it uses the so-called Variable Eddington Tensor closure meth
 
 {% include figure image_path="/assets/images/VETMethodCompare.pdf" caption="The radiation field obtained with the VET method (right) compared with the more commonly adopted FLD (left) or Moment-1 (right) approximations, for a test of two sources of radiation in an optically thin medium, impinging on an optically thick spherical blob of gas. Figure adopted from [**Menon et al. 2022, MNRAS, 512, 401**](https://ui.adsabs.harvard.edu/abs/2022MNRAS.512..401M/abstract)" %}
 
-<video muted autoplay controls width="600" controls="controls">
+<video muted autoplay controls width="800" controls="controls">
   <source src="/assets/videos/temp_nSide4.mp4" type="video/mp4">
 </video>
