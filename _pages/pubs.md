@@ -43,5 +43,3 @@ An up-to-date list of my publications can be found on my <a href="https://adsabs
 1. [**First extragalactic measurement of the turbulence driving parameter: ALMA observations of the star-forming region N159E in the Large Magellanic Cloud**](https://ui.adsabs.harvard.edu/abs/2022MNRAS.509.2180S/abstract) <br/>
 Sharda, P.; **Menon, S.H.** ; Federrath, C.; Krumholz, M.R.; Beattie, J.R; Jameson, K.E.; Tokuda, K.; Burkhart, B.; Crocker, R.M; Law, C.J.; Seta, A.; Gaetz, T.J.; Pingel, N.M.; Seitenzahl, I.R.; Sano, H.; Fukui, Y. (2022; MNRAS, 509, 2180)
 
-
-<!-- {% pdf "/assets/docs/Resume.pdf" %} -->
