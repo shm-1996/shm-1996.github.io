@@ -7,8 +7,6 @@ main:
     url: /pubs/
   - title: "Movies"
     url: /movies/
-  - title: "Codes/Resources"
-    url: /codes/
   - title: "Life Outside Science"
     url: /life/
 
