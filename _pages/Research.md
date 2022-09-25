@@ -38,8 +38,8 @@ feature_row:
   btn_class: "btn--primary"
 - image_path: /assets/images/HIFrag.png
   title: "The self-regulated formation of cold gas in the ISM via the thermal instability, shear and feedback."
-  excerpt: "The star-forming dense, cold phase of in the ISM (i.e., the Cold Neutral Medium; CNM) forms and evolves amidst a combination of physical mechanisms operating at galactic scales: namely, the thermal instability, differential rotation/shear and stellar feedback. In my master's thesis, I performed numerical simulations with the *Athena* MHD code to explore how each of these mechanisms individually affects the formation and fragmentation of the CNM, and how the process of CNM formation and destruction is self-regulating over ~Gyr timescales <br/> Master's Thesis: [**Menon et al. 2021, MNRAS, 507,5542**](https://ui.adsabs.harvard.edu/abs/2021MNRAS.507.5542M/abstract)"
-  url: "#test-link"
+  excerpt: "The star-forming dense, cold phase of in the ISM (i.e., the Cold Neutral Medium; CNM) forms and evolves amidst a combination of physical mechanisms operating at galactic scales: namely, the thermal instability, differential rotation/shear and stellar feedback. In my master's thesis, I performed numerical simulations with the *Athena* MHD code to explore how each of these mechanisms individually affects the formation and fragmentation of the CNM, and how the process of CNM formation and destruction is self-regulating over ~Gyr timescales <br/> [**Link to Master's Thesis**](https://www.dropbox.com/sh/afarzv6v6pvqyes/AACdRiKa9tuUTN-Z_GbyU1Qfa?dl=0)"
+  url: "/hifrag/"
   btn_label: "Read More"
   btn_class: "btn--primary"
 ---
