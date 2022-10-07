@@ -17,7 +17,7 @@ feature_row:
     alt: "placeholder image 2"
     title: "RHD Simulations of Super-Star Cluster Formation"
     url: "/movies/#rhd-simulations-of-super-star-cluster-formation"
-    excerpt: "Simulations from [Menon+ 2022b.](https://ui.adsabs.harvard.edu/abs/2022arXiv220614190M/abstract) and Menon+ 2022c (in prep.)"
+    excerpt: "Simulations from [Menon+ 2022b.](https://ui.adsabs.harvard.edu/abs/2022arXiv220614190M/abstract) and [Menon+ 2022c.](https://arxiv.org/abs/2210.02818)"
     btn_label: "Click here to see"
     btn_class: "btn--info btn--large"
   - image_path: /assets/images/Ionize_ZColumn.png
@@ -83,7 +83,7 @@ RHD Simulations of Super Star Cluster Formation
   Gas Evolution
 </u> </h4>
 
-Simulations from [Menon+ 2022c](https://ui.adsabs.harvard.edu/abs/2022arXiv220614190M/abstract) showing the evolution of the projected gas density under the effects of UV+IR radiation pressure, for four different initial gas surface densities (increasing top-left to bottom-right).
+Simulations from [Menon+ 2022c](https://arxiv.org/abs/2210.02818) showing the evolution of the projected gas density under the effects of UV+IR radiation pressure, for four different initial gas surface densities (increasing top-left to bottom-right).
 
 <video muted controls width="1000" controls="controls">
   <source src="/assets/videos/CompareSigma_Multiband.mp4" type="video/mp4" caption="TEST" allowfullscreen>
@@ -94,7 +94,7 @@ Simulations from [Menon+ 2022c](https://ui.adsabs.harvard.edu/abs/2022arXiv22061
   UV vs IR
 </u> </h4>
 
-Comparing the evolution of gas for control simulations with only the radiation pressure in the IR band (left), UV band (middle), and the combined UV and IR radiation bands (right).
+Comparing the evolution of gas for control simulations with only the radiation pressure in the IR band (left), and with the combined effects of UV and IR radiation bands (right).
 
 <video muted controls width="1200" controls="controls">
   <source src="/assets/videos/Sigma3.2e3_UV_Vs_IR.mp4" type="video/mp4">
@@ -104,7 +104,7 @@ Comparing the evolution of gas for control simulations with only the radiation p
   Dust-to-gas ratios
 </u> </h4>
 
-Simulations from [Menon+ 2022b](https://ui.adsabs.harvard.edu/abs/2022arXiv220614190M/abstract) showing the evolution of the projected gas density, compared for dust to gas ratios of 1, 2 and 3 times solar respectively (left to right). We can see that even at high dust-to-gas ratios, the effects of IR radiation on the dynamics are mild.
+Simulations from [Menon+ 2022b](https://ui.adsabs.harvard.edu/abs/2022MNRAS.tmp.2507M/abstract) showing the evolution of the projected gas density, compared for dust to gas ratios of 1, 2 and 3 times solar respectively (left to right). We can see that even at high dust-to-gas ratios, the effects of IR radiation on the dynamics are mild.
 
 <video muted controls width="1200" controls="controls">
   <source src="/assets/videos/Sigma3.2e4_DGCompare.mp4" type="video/mp4">
@@ -115,7 +115,7 @@ Simulations from [Menon+ 2022b](https://ui.adsabs.harvard.edu/abs/2022arXiv22061
   IR dust opacities
 </u> </h4>
 
-Movies of simulations for our fiducial run in [Menon+ 2022b](https://ui.adsabs.harvard.edu/abs/2022arXiv220614190M/abstract) with realistic dust opacities of Semenov et al. 2003 (left) used in our simulation setup. This is compared with control runs that adopt a power-law approximation to the same (middle), and a run with a constant dust opacity of 10 cm^2 g^-1 (right): both of which are commonly used approximations in the literature. The difference in dynamical outcomes shows why using the dust IR opacities consistent with the state of the gas are important.
+Movies of simulations for our fiducial run in [Menon+ 2022b](https://ui.adsabs.harvard.edu/abs/2022MNRAS.tmp.2507M/abstract) with realistic dust opacities of Semenov et al. 2003 (left) used in our simulation setup. This is compared with control runs that adopt a power-law approximation to the same (middle), and a run with a constant dust opacity of 10 cm^2 g^-1 (right): both of which are commonly used approximations in the literature. The difference in dynamical outcomes shows why using the dust IR opacities consistent with the state of the gas are important.
 
 <video muted controls width="1200" controls="controls">
   <source src="/assets/videos/Sigma3.2e5_Opacs.mp4" type="video/mp4">
