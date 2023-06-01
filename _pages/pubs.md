@@ -22,10 +22,10 @@ An up-to-date list of my publications can be found on my <a href="https://adsabs
 </u> </h9>
 
 1.  [**Outflows Driven by Direct and Reprocessed Radiation Pressure in Massive Star Clusters**](https://arxiv.org/abs/2210.02818) <br/>
-**Menon, S.H.**; Federrath, C. ; Krumholz, M.R. (2022; MNRAS submitted)
+**Menon, S.H.**; Federrath, C. ; Krumholz, M.R. (2023; MNRAS, 521, 5160)
 
 2.  [**Infrared Radiation Feedback Does Not Regulate Star Cluster Formation or Drive Winds**](https://ui.adsabs.harvard.edu/abs/2022MNRAS.tmp.2507M/abstract) <br/>
-**Menon, S.H.**; Federrath, C. ; Krumholz, M.R. (2022; MNRAS accepted)
+**Menon, S.H.**; Federrath, C. ; Krumholz, M.R. (2022; MNRAS, 517, 1313)
 
 3. [**VETTAM: a scheme for radiation hydrodynamics with adaptive mesh refinement using the variable Eddington tensor method**](https://ui.adsabs.harvard.edu/abs/2022MNRAS.512..401M/abstract) <br/>
 **Menon, S.H.**; Federrath, C. ; Krumholz, M.R.; Kuiper, Rolf; Wibking, Benjamin D.; Jung, Manuel (2022; MNRAS, 512, 401)
