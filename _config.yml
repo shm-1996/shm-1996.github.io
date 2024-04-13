@@ -14,9 +14,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Shyam Menon
-email: shyam.menon@anu.edu.au
+email: shyam.menon@rutgers.edu
 description: >- # this means to ignore newlines until "baseurl:"
-  Professional website of Shyam H Menon, a PhD student of Astrophysics at the Australian National University
+  Professional website of Shyam H Menon, Joint Rutgers-Flatiron Postdoctoral Fellow
 twitter_username: shyam_astro
 github_username: shm-1996
 minimal_mistakes_skin: mint
@@ -57,9 +57,9 @@ plugins:
 author:
   name   : "Shyam Menon"
   avatar : "/assets/images/bio-photo.jpg"
-  bio    : "PhD Student in Astrophysics at the Australian National University."
-  location : Canberra, Australia
-  email : shyam.menon@anu.edu.au
+  bio    : "Joint Rutgers-Flatiron Postdoctoral Fellow."
+  location : NJ/NY
+  email : shyam.menon@rutgers.edu
   links:
     - label: "Orcid"
       icon: "fab fa-fw fa-orcid"
