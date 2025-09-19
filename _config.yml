@@ -14,9 +14,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Shyam Menon
-email: shyam.menon@rutgers.edu
+email: smenon@flatironinstitute.org
 description: >- # this means to ignore newlines until "baseurl:"
-  Professional website of Shyam H Menon, Joint Rutgers-Flatiron Postdoctoral Fellow
+  Professional website of Shyam H Menon, Flatiron Research Fellow
 twitter_username: shyam_astro
 github_username: shm-1996
 minimal_mistakes_skin: mint
@@ -57,9 +57,9 @@ plugins:
 author:
   name   : "Shyam Menon"
   avatar : "/assets/images/bio-photo.jpg"
-  bio    : "Joint Rutgers-Flatiron Postdoctoral Fellow."
+  bio    : "Flatiron Research Fellow."
   location : NJ/NY
-  email : shyam.menon@rutgers.edu
+  email : smenon@flatironinstitute.org
   links:
     - label: "Orcid"
       icon: "fab fa-fw fa-orcid"
@@ -70,6 +70,10 @@ author:
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
       url: "https://twitter.com/"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/shyamhmenon"
+
 
 
 footer:
