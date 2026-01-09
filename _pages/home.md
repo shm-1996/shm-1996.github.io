@@ -8,7 +8,7 @@ header:
   overlay_filter: 0.4
 classes: wide
 ---
-<figure style="width: 30%" class="align-right">
+<figure style="width: 50%" class="align-right">
   <a href="/assets/images/Menon_Shyam.jpg" title="Home Photo" alt="Home Photo">
   <img src="/assets/images/Menon_Shyam.jpg" alt=""></a>
 </figure>
