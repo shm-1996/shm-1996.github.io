@@ -9,8 +9,8 @@ header:
 classes: wide
 ---
 <figure style="width: 30%" class="align-right">
-  <a href="/assets/images/Shyam_Photo2.jpg" title="Home Photo" alt="Home Photo">
-  <img src="/assets/images/Shyam_Photo2.jpg" alt=""></a>
+  <a href="/assets/images/Menon_Shyam.jpg" title="Home Photo" alt="Home Photo">
+  <img src="/assets/images/Menon_Shyam.jpg" alt=""></a>
 </figure>
 
 Hi there! I'm a Flatiron Research Fellow Fellow currently based at the [**Centre for Computational Astrophysics (CCA), Flatiron Institute**](https://www.simonsfoundation.org/flatiron/center-for-computational-astrophysics/). I primarily work with the Galaxy Formation group at the CCA and with [**Prof. Blakesley Burkhart's**](https://www.bburkhart.com) group at the Department of Physics and Astronomy, Rutgers University. Previously, I obtained my PhD in Astrophysics in the other hemisphere, working with [**A/Prof. Christoph Federrath**](https://www.mso.anu.edu.au/~chfeder/) and [**Prof. Mark Krumholz**](https://www.mso.anu.edu.au/~krumholz/) at the Research School of Astronomy and Astrophysics, Mount Stromlo Observatory, Australian National University (ANU). I am originally from the coastal city of Kochi, Kerala in the diverse nation of India. 
