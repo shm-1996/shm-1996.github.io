@@ -56,7 +56,7 @@ plugins:
 
 author:
   name   : "Shyam Menon"
-  avatar : "/assets/images/bio-photo.jpg"
+  avatar : "assets/images/Menon_Shyam.jpg"
   bio    : "Flatiron Research Fellow."
   location : NJ/NY
   email : smenon@flatironinstitute.org
