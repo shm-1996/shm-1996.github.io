@@ -1,0 +1,488 @@
+<h2 class="sr-only">Lyman-alpha spatial and frequency random walk with core-skipping</h2>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0
+    }
+
+    body {
+        font-family: Georgia, serif;
+        background: #fff;
+        color: #1a1a1a
+    }
+
+    canvas {
+        display: block
+    }
+
+    .wrap {
+        padding: 0.5rem 0.7rem 0.7rem
+    }
+
+    .row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-bottom: 5px;
+        font-family: Arial, sans-serif
+    }
+
+    label {
+        font-size: 12px;
+        color: #555
+    }
+
+    .val {
+        font-size: 12px;
+        font-weight: 500;
+        min-width: 44px;
+        color: #111
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 3px 11px;
+        cursor: pointer;
+        border: 0.5px solid #bbb;
+        border-radius: 6px;
+        background: #f5f5f5;
+        color: #1a1a1a
+    }
+
+    .btn:hover {
+        background: #e8e8e8
+    }
+
+    .stats {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 5px;
+        flex-wrap: wrap;
+        font-family: Arial, sans-serif
+    }
+
+    .stat {
+        font-size: 11px;
+        color: #666
+    }
+
+    .stat b {
+        color: #111;
+        font-weight: 500
+    }
+
+    .canvases {
+        display: flex;
+        gap: 8px
+    }
+</style>
+
+<div class="wrap">
+
+    <div class="row">
+        <label>log τ₀</label>
+        <input type="range" id="rtau" min="4" max="8" value="6" step="0.5" style="width:72px">
+        <span class="val" id="vtau">10⁶</span>
+        <label>T (K)</label>
+        <input type="range" id="rT" min="1" max="4" value="2" step="1" style="width:60px">
+        <span class="val" id="vT">100 K</span>
+        <label>steps/frame</label>
+        <input type="range" id="rspf" min="0" max="5" value="1" step="1" style="width:65px">
+        <span class="val" id="vspf">×10</span>
+        <button class="btn" id="bNew">New photon ↺</button>
+        <button class="btn" id="bPause">Pause</button>
+    </div>
+    <div class="stats">
+        <div class="stat">phase: <b id="sP">core</b></div>
+        <div class="stat">x<sub>esc</sub>: <b id="sXe">—</b></div>
+        <div class="stat">escaped: <b id="sE">—</b></div>
+    </div>
+    <div class="canvases" id="canvasRow">
+        <canvas id="cX"></canvas>
+        <canvas id="cZ"></canvas>
+    </div>
+</div>
+
+<script>
+    const cX = document.getElementById('cX'), cZ = document.getElementById('cZ');
+    const xC = cX.getContext('2d'), zC = cZ.getContext('2d');
+    const rtau = document.getElementById('rtau'), rT = document.getElementById('rT'), rspf = document.getElementById('rspf');
+    const vtau = document.getElementById('vtau'), vT = document.getElementById('vT'), vspf = document.getElementById('vspf');
+    const bNew = document.getElementById('bNew'), bPause = document.getElementById('bPause');
+    const sP = document.getElementById('sP'), sXe = document.getElementById('sXe'), sE = document.getElementById('sE');
+
+    const T_VALS = [10, 100, 1000, 10000];
+    const T_LBLS = ['10', '100', '1 000', '10 000'];
+    const SPF_VALS = [1, 10, 100, 1000, 10000, 0];
+    const SPF_LBLS = ['×1', '×10', '×100', '×1k', '×10k', 'adaptive'];
+
+    let paused = false;
+
+    // ── physics: exactly Smith Section III ───────────────────────────────────
+    // tau0  : line-centre optical depth of half-slab (z in [0,Z])
+    // a     : Voigt damping parameter
+    // x_cw  : core-wing boundary  (where Gaussian ~ Lorentzian wing)
+    // x_cs  : core-skip frequency = x_esc = (a*tau0/sqrt(pi))^{1/3}
+    // dz0   : step-size prefactor = sqrt(pi)/(a*tau0)   [Smith: dz0 = sqrt(pi)*Z/(a*tau0), Z=1]
+
+    function getTau() { return Math.pow(10, +rtau.value); }
+    function getT() { return T_VALS[+rT.value - 1]; }
+    function getAv() { return 4.702e-4 / Math.sqrt(getT() / 1e4); }
+
+    function getXcw() {
+        // solve exp(-x^2) = a/(sqrt(pi)*x^2)
+        const a = getAv();
+        for (let x = 0.1; x < 10; x += 0.01)
+            if (Math.exp(-x * x) < a / (Math.sqrt(Math.PI) * x * x)) return x;
+        return 3.5;
+    }
+
+    function getXcs() {
+        // x_cs fixed at 3 (core-skipping threshold)
+        return 3.0;
+    }
+
+    function getDz0() {
+        // dz0 = sqrt(pi) / (a * tau0)   [Z=1 units]
+        return Math.sqrt(Math.PI) / (getAv() * getTau());
+    }
+
+    function gauss() {
+        let u, v;
+        do { u = Math.random(); } while (!u);
+        do { v = Math.random(); } while (!v);
+        return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    }
+
+    // ── photon state ──────────────────────────────────────────────────────────
+    let x = 0, z = 0, nScat = 0, escaped = false;
+    let xs = [], zs = [], inCores = [];
+
+    function initPhoton() {
+        x = 0; z = 0; nScat = 0; escaped = false;
+        xs = [0]; zs = [0]; inCores = [true];
+        updateStats();
+    }
+
+    // Exactly Smith's photon() loop, one step at a time
+    function mcStep() {
+        if (escaped) return;
+
+        const xcw = getXcw();
+        const xcs = getXcs();
+        const dz0 = getDz0();
+
+        // ── scatter (frequency redistribution) ──────────────────────────────
+        if (Math.abs(x) < xcw) {
+            // core-skipping: assume mfp=0, jump to ±x_cs
+            x = xcs;
+            if (Math.random() < 0.5) x = -x;
+        } else {
+            // wing: Fokker-Planck approx to R_II
+            // mean drift <dx> = -1/x,  rms <dx^2>^{1/2} = 1
+            x += gauss() - 1.0 / x;
+        }
+
+        // ── move ─────────────────────────────────────────────────────────────
+        const mu = 2 * Math.random() - 1;          // random direction cosine
+        const dtau = -Math.log(Math.random());      // random optical depth
+        // dz = mu * dtau / (k0 * H(x)) = mu * dtau * dz0 * x^2
+        // (wing approximation H(x) ~ a/(sqrt(pi)*x^2), absorbed into dz0)
+        const dz = mu * dtau * dz0 * x * x;
+        z += dz;
+
+        const inCore = Math.abs(x) < xcw;
+        if (!inCore) nScat++;   // count only wing scatters (core mfp=0)
+
+        xs.push(x); zs.push(z); inCores.push(inCore);
+        if (xs.length > 8000) { xs.shift(); zs.shift(); inCores.shift(); }
+
+        if (Math.abs(z) >= 1.0) escaped = true;
+        updateStats();
+    }
+
+    function updateStats() {
+        const ic = Math.abs(x) < getXcw();
+        sP.textContent = ic ? 'core' : 'wing';
+        sP.style.color = ic ? '#1f77b4' : '#d62728';
+        const xesc = Math.pow(getAv() * getTau() / Math.sqrt(Math.PI), 1 / 3);
+        sXe.textContent = xesc.toFixed(2);
+        sE.textContent = escaped ? `yes, N=${nScat}` : '—';
+    }
+
+    // ── matplotlib-style drawing ──────────────────────────────────────────────
+    const BG = '#ffffff', AX = '#1a1a1a', GRID = '#e8e8e8', SPINE = '#333333';
+    const COL_CORE = '#1f77b4', COL_WING = '#d62728', COL_ESC = '#2ca02c';
+
+    const SHOW = 700;
+    const FONT = s => `${s}px Georgia,serif`;
+
+    // ── frequency panel ───────────────────────────────────────────────────────
+    function drawX() {
+        const W = cX.width, H = cX.height, dpr = window.devicePixelRatio || 1;
+        xC.clearRect(0, 0, W, H);
+        xC.fillStyle = BG; xC.fillRect(0, 0, W, H);
+
+        const pad = { l: 46 * dpr, r: 14 * dpr, t: 16 * dpr, b: 40 * dpr };
+        const pw = W - pad.l - pad.r, ph = H - pad.t - pad.b;
+
+        const xe = Math.pow(getAv() * getTau() / Math.sqrt(Math.PI), 1 / 3), xcw = getXcw(), av = getAv();
+
+        // y range
+        const allX = xs.slice(-SHOW);
+        const yRaw = Math.max(...allX.map(v => Math.abs(v)), xe * 2.2, 5);
+        const YMIN = -yRaw * 1.05, YMAX = yRaw * 1.05;
+        const ty = v => pad.t + (1 - (v - YMIN) / (YMAX - YMIN)) * ph;
+        const tn = i => {
+            const N = xs.length, st = Math.max(0, N - SHOW), span = Math.max(Math.min(N - 1, SHOW - 1), 1);
+            return pad.l + (i - st) / span * pw;
+        };
+
+        // grid
+        xC.strokeStyle = GRID; xC.lineWidth = 0.7 * dpr;
+        const yticks = [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10].filter(v => v >= YMIN && v <= YMAX);
+        yticks.forEach(v => {
+            xC.beginPath(); xC.moveTo(pad.l, ty(v)); xC.lineTo(pad.l + pw, ty(v)); xC.stroke();
+        });
+
+        // core shading
+        const ycw = ty(xcw), ymcw = ty(-xcw);
+        if (ycw >= pad.t && ymcw <= pad.t + ph) {
+            xC.fillStyle = 'rgba(31,119,180,0.07)';
+            xC.fillRect(pad.l, ycw, pw, ymcw - ycw);
+        }
+
+        // Voigt profile as faint horizontal curve
+        // log10(H(x)/H(0)) mapped to horizontal offset within panel
+        const H0 = Math.exp(0); // H(0)=1 in Gaussian approx
+        function Hx(xv) {
+            const ax = Math.abs(xv);
+            if (ax < getXcw()) return Math.exp(-xv * xv);
+            return av / (Math.sqrt(Math.PI) * xv * xv);
+        }
+        xC.beginPath();
+        const NS = 500;
+        for (let i = 0; i <= NS; i++) {
+            const xv = YMIN + i / NS * (YMAX - YMIN);
+            const logH = Math.log10(Math.max(Hx(xv), 1e-10));
+            // map logH in [-8,0] to x position: logH=0 -> right edge, logH=-8 -> left
+            const logRange = 8;
+            const frac = Math.max(0, Math.min(1, (logH + logRange) / logRange));
+            const cx2 = pad.l + frac * pw * 0.92;
+            i === 0 ? xC.moveTo(cx2, ty(xv)) : xC.lineTo(cx2, ty(xv));
+        }
+        xC.strokeStyle = 'rgba(0,0,0,0.13)'; xC.lineWidth = 2 * dpr; xC.stroke();
+
+        // xesc dashed lines
+        [xe, -xe].filter(v => v > YMIN && v < YMAX).forEach(v => {
+            xC.setLineDash([5 * dpr, 4 * dpr]);
+            xC.strokeStyle = COL_WING; xC.lineWidth = 1 * dpr; xC.globalAlpha = 0.5;
+            xC.beginPath(); xC.moveTo(pad.l, ty(v)); xC.lineTo(pad.l + pw, ty(v)); xC.stroke();
+            xC.globalAlpha = 1; xC.setLineDash([]);
+        });
+
+        // x=0
+        xC.strokeStyle = 'rgba(0,0,0,0.18)'; xC.lineWidth = 0.7 * dpr;
+        xC.beginPath(); xC.moveTo(pad.l, ty(0)); xC.lineTo(pad.l + pw, ty(0)); xC.stroke();
+
+        // frequency trail
+        const N = xs.length, st = Math.max(0, N - SHOW);
+        for (let i = st; i < N - 1; i++) {
+            const al = 0.12 + 0.88 * (i - st) / Math.min(N - 1, SHOW);
+            const isW = !inCores[i];
+            xC.beginPath();
+            xC.moveTo(tn(i), ty(xs[i]));
+            xC.lineTo(tn(i + 1), ty(xs[i + 1]));
+            xC.strokeStyle = isW ? `rgba(214,39,40,${al})` : `rgba(31,119,180,${al * 0.5})`;
+            xC.lineWidth = isW ? 1.5 * dpr : 0.8 * dpr;
+            xC.stroke();
+        }
+
+        // current dot
+        if (N > 0) {
+            xC.beginPath(); xC.arc(tn(N - 1), ty(xs[N - 1]), 4.5 * dpr, 0, 2 * Math.PI);
+            xC.fillStyle = escaped ? COL_ESC : (!inCores[N - 1] ? COL_WING : COL_CORE);
+            xC.fill(); xC.strokeStyle = BG; xC.lineWidth = 1.5 * dpr; xC.stroke();
+        }
+
+        // spines
+        xC.strokeStyle = SPINE; xC.lineWidth = 1 * dpr; xC.setLineDash([]);
+        xC.strokeRect(pad.l, pad.t, pw, ph);
+
+        // ticks + labels
+        xC.fillStyle = AX; xC.font = FONT(10 * dpr); xC.textAlign = 'right';
+        yticks.forEach(v => {
+            const yy = ty(v);
+            xC.beginPath(); xC.moveTo(pad.l, yy); xC.lineTo(pad.l - 4 * dpr, yy);
+            xC.strokeStyle = SPINE; xC.lineWidth = 1 * dpr; xC.stroke();
+            xC.fillText(v, pad.l - 7 * dpr, yy + 4 * dpr);
+        });
+        xC.fillStyle = AX; xC.font = FONT(12 * dpr); xC.textAlign = 'center';
+        xC.fillText('scatter number  n', pad.l + pw / 2, H - 6 * dpr);
+        xC.save(); xC.translate(14 * dpr, pad.t + ph / 2); xC.rotate(-Math.PI / 2);
+        xC.textAlign = 'center'; xC.font = FONT(12 * dpr);
+        xC.fillText('frequency  x', 0, 0); xC.restore();
+
+        // region + in-panel text
+        const ic2 = N > 0 && !inCores[N - 1];
+        xC.font = FONT(11 * dpr); xC.textAlign = 'left';
+        xC.fillStyle = 'rgba(0,0,0,0.75)';
+        xC.fillText('N = ' + nScat, pad.l + 8 * dpr, pad.t + 16 * dpr);
+        xC.fillStyle = ic2 ? COL_WING : COL_CORE;
+        xC.fillText('x = ' + (N > 0 ? xs[N - 1].toFixed(3) : '0.000'), pad.l + 8 * dpr, pad.t + 30 * dpr);
+
+        xC.font = FONT(10 * dpr); xC.textAlign = 'left';
+        xC.fillStyle = COL_CORE; xC.globalAlpha = 0.65;
+        if (ycw > pad.t + 14 * dpr) xC.fillText('core', pad.l + 4 * dpr, ycw - 4 * dpr);
+        xC.fillStyle = COL_WING; xC.globalAlpha = 0.55;
+        const yxe = ty(xe);
+        if (yxe > pad.t + 12 * dpr && yxe < pad.t + ph - 4 * dpr)
+            xC.fillText('x_esc=' + xe.toFixed(1), pad.l + 4 * dpr, yxe - 4 * dpr);
+        xC.globalAlpha = 1;
+
+        xC.fillStyle = 'rgba(0,0,0,0.28)'; xC.textAlign = 'right';
+        xC.fillText('\u03c3(x)', pad.l + pw - 4 * dpr, pad.t + 12 * dpr);
+    }
+
+    // ── slab panel ────────────────────────────────────────────────────────────
+    function drawZ() {
+        const W = cZ.width, H = cZ.height, dpr = window.devicePixelRatio || 1;
+        zC.clearRect(0, 0, W, H);
+        zC.fillStyle = BG; zC.fillRect(0, 0, W, H);
+
+        const padT = 16 * dpr, padB = 40 * dpr, padL = 44 * dpr, padR = 10 * dpr;
+        const ph = H - padT - padB, pw = W - padL - padR;
+        const tz = v => padT + (1 - (v + 1) / 2) * ph;
+
+        // grid
+        zC.strokeStyle = GRID; zC.lineWidth = 0.7 * dpr;
+        [-1, -0.5, 0, 0.5, 1].forEach(v => {
+            zC.beginPath(); zC.moveTo(padL, tz(v)); zC.lineTo(padL + pw, tz(v)); zC.stroke();
+        });
+
+        const slabCX = padL + pw / 2, slabW = pw * 0.28;
+        const slabL = slabCX - slabW / 2;
+
+        // slab fill
+        zC.fillStyle = 'rgba(31,119,180,0.06)';
+        zC.fillRect(slabL, padT, slabW, ph);
+
+        // boundary lines
+        [1, -1].forEach(v => {
+            const yy = tz(v);
+            zC.strokeStyle = COL_WING; zC.lineWidth = 2 * dpr; zC.setLineDash([]);
+            zC.beginPath(); zC.moveTo(slabL - 5 * dpr, yy); zC.lineTo(slabL + slabW + 5 * dpr, yy); zC.stroke();
+        });
+
+        // z=0 dashed
+        zC.setLineDash([4 * dpr, 3 * dpr]);
+        zC.strokeStyle = 'rgba(0,0,0,0.15)'; zC.lineWidth = 0.8 * dpr;
+        zC.beginPath(); zC.moveTo(slabL, tz(0)); zC.lineTo(slabL + slabW, tz(0)); zC.stroke();
+        zC.setLineDash([]);
+
+        // spatial track (wing steps only — core has mfp=0)
+        const N = zs.length, st = Math.max(0, N - SHOW);
+        const jit = i => (((i * 2654435761) >>> 0) / 0xffffffff - 0.5) * slabW * 0.45;
+        for (let i = st; i < N - 1; i++) {
+            if (inCores[i]) continue;
+            const al = 0.12 + 0.88 * (i - st) / Math.min(N - 1, SHOW);
+            const z0 = Math.max(-1.05, Math.min(1.05, zs[i]));
+            const z1 = Math.max(-1.05, Math.min(1.05, zs[i + 1]));
+            zC.beginPath();
+            zC.moveTo(slabCX + jit(i), tz(z0));
+            zC.lineTo(slabCX + jit(i + 1), tz(z1));
+            zC.strokeStyle = `rgba(214,39,40,${al})`;
+            zC.lineWidth = 1.3 * dpr; zC.stroke();
+        }
+
+        // big photon dot
+        const zCur = Math.max(-1.05, Math.min(1.05, z));
+        zC.beginPath(); zC.arc(slabCX, tz(zCur), 7 * dpr, 0, 2 * Math.PI);
+        zC.fillStyle = escaped ? COL_ESC : (!inCores[inCores.length - 1] ? COL_WING : COL_CORE);
+        zC.fill(); zC.strokeStyle = BG; zC.lineWidth = 2 * dpr; zC.stroke();
+
+        // spines
+        zC.strokeStyle = SPINE; zC.lineWidth = 1 * dpr; zC.setLineDash([]);
+        zC.strokeRect(padL, padT, pw, ph);
+
+        // ticks + labels
+        zC.fillStyle = AX; zC.font = FONT(10 * dpr); zC.textAlign = 'right';
+        [-1, -0.5, 0, 0.5, 1].forEach(v => {
+            const yy = tz(v);
+            zC.beginPath(); zC.moveTo(padL, yy); zC.lineTo(padL - 4 * dpr, yy);
+            zC.strokeStyle = SPINE; zC.lineWidth = 1 * dpr; zC.stroke();
+            zC.fillText(v.toFixed(1), padL - 7 * dpr, yy + 4 * dpr);
+        });
+        zC.fillStyle = AX; zC.font = FONT(12 * dpr); zC.textAlign = 'center';
+        zC.fillText('slab', padL + pw / 2, H - 6 * dpr);
+        zC.save(); zC.translate(13 * dpr, padT + ph / 2); zC.rotate(-Math.PI / 2);
+        zC.textAlign = 'center'; zC.font = FONT(12 * dpr); zC.fillStyle = AX;
+        zC.fillText('z / Z', 0, 0); zC.restore();
+
+        // wall labels
+        zC.font = FONT(9 * dpr); zC.fillStyle = COL_WING; zC.globalAlpha = 0.65; zC.textAlign = 'center';
+        zC.fillText('z = +Z', slabCX, padT - 4 * dpr);
+        zC.fillText('z = \u2212Z', slabCX, H - padB + 13 * dpr);
+        zC.globalAlpha = 1;
+
+        if (escaped) {
+            zC.font = FONT(10 * dpr); zC.fillStyle = COL_ESC; zC.textAlign = 'center'; zC.globalAlpha = 0.9;
+            zC.fillText('escaped!', slabCX, zCur > 0 ? padT - 14 * dpr : H - padB + 24 * dpr);
+            zC.globalAlpha = 1;
+        }
+    }
+
+    // ── resize ────────────────────────────────────────────────────────────────
+    function resize() {
+        const dpr = window.devicePixelRatio || 1;
+        const total = document.getElementById('canvasRow').clientWidth || 600;
+        const slabW = Math.round(total * 0.21), freqW = total - slabW - 8;
+        const H = Math.round(freqW * 0.60);
+        cX.width = freqW * dpr; cX.height = H * dpr; cX.style.width = freqW + 'px'; cX.style.height = H + 'px';
+        cZ.width = slabW * dpr; cZ.height = H * dpr; cZ.style.width = slabW + 'px'; cZ.style.height = H + 'px';
+    }
+
+    // ── loop ──────────────────────────────────────────────────────────────────
+    function loop() {
+        if (!paused && !escaped) {
+            const spfIdx = +rspf.value;
+            if (spfIdx === 5) {
+                // adaptive: burn core steps, pause on notable wing spatial steps
+                const xcw = getXcw();
+                let steps = 0;
+                while (steps < 100000 && !escaped) {
+                    const wasWing = Math.abs(x) >= xcw, zBefore = z;
+                    mcStep(); steps++;
+                    if (wasWing && Math.abs(z - zBefore) > 0.004) break;
+                }
+            } else {
+                const n = SPF_VALS[spfIdx];
+                for (let i = 0; i < n && !escaped; i++) mcStep();
+            }
+        }
+        drawX(); drawZ();
+        requestAnimationFrame(loop);
+    }
+
+    // ── controls ──────────────────────────────────────────────────────────────
+    function sup(n) {
+        const m = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸' };
+        return String(n).split('').map(c => m[c] || c).join('');
+    }
+    function updateLabels() {
+        vtau.textContent = '10' + sup(rtau.value);
+        vT.textContent = T_LBLS[+rT.value - 1] + ' K';
+        vspf.textContent = SPF_LBLS[+rspf.value];
+        sXe.textContent = getXcs().toFixed(2);
+    }
+    rtau.addEventListener('input', () => { updateLabels(); initPhoton(); });
+    rT.addEventListener('input', () => { updateLabels(); initPhoton(); });
+    rspf.addEventListener('input', updateLabels);
+    bNew.addEventListener('click', initPhoton);
+    bPause.addEventListener('click', () => { paused = !paused; bPause.textContent = paused ? 'Resume' : 'Pause'; });
+    window.addEventListener('resize', resize);
+
+    resize(); updateLabels(); initPhoton(); requestAnimationFrame(loop);
+</script>
