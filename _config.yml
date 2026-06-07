@@ -58,7 +58,7 @@ author:
   name   : "Shyam Menon"
   avatar : "assets/images/Menon_Shyam.jpg"
   bio    : "Flatiron Research Fellow."
-  location : NJ/NY
+  location : New York City
   email : smenon@flatironinstitute.org
   links:
     - label: "Orcid"
@@ -67,12 +67,12 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/shm-1996"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
     - label: "LinkedIn"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/shyamhmenon"
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/shyam_astro"
 
 
 

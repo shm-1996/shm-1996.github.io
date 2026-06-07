@@ -7,7 +7,5 @@ main:
     url: /pubs/
   - title: "Movies"
     url: /movies/
-  - title: "Life Outside Science"
-    url: /life/
 
   
